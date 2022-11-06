@@ -80,8 +80,8 @@ sudo docker compose exec backend python manage.py collectstatic --noinput
 sudo docker compose exec backend python manage.py loaddata ingredients.json
 ```
 
+### Автор
 
-## Автор
 **Вихарев Алексей**
 
 [![Django-app workflow](https://github.com/vikharev/foodgram-project-react/actions/workflows/main.yml/badge.svg)](https://github.com/vikharev/foodgram-project-react/actions/workflows/main.yml)
