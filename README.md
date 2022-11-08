@@ -81,6 +81,7 @@ sudo docker compose exec backend python manage.py loaddata ingredients.json
 ```
 
 
+
 ### Автор
 
 **Вихарев Алексей**
