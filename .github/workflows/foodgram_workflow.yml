@@ -62,8 +62,8 @@ jobs:
           script: |
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend:v1.0.0
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:latest
-            sudo docker-compose stop
-            sudo docker-compose rm backend
+            sudo docker compose stop
+            sudo docker compose rm backend
             rm .env
             touch .env
             sudo echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
@@ -72,7 +72,7 @@ jobs:
             sudo echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             sudo echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             sudo echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-            sudo docker-compose up -d
+            sudo docker compose up -d
 
   telegram_message:
     name: Send telegram message
