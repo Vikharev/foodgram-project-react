@@ -1,42 +1,62 @@
 from django.contrib import admin
-from django.contrib.admin import display
 
-from .models import (Favourite, Ingredient, IngredientInRecipe, Recipe,
-                     ShoppingCart, Tag)
+from .models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 
 
-@admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'id', 'author', 'added_in_favorites')
-    readonly_fields = ('added_in_favorites',)
-    list_filter = ('author', 'name', 'tags',)
-
-    @display(description='Количество в избранных')
-    def added_in_favorites(self, obj):
-        return obj.favorites.count()
+class IngredientsRecipeLine(admin.TabularInline):
+    """ Связь  ингридиентов в рецепте """
+    model = Recipe.ingredients.through
 
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'measurement_unit',)
-    list_filter = ('name',)
+    """ Админ панель управление ингридиентами """
+    list_display = ('name', 'measurement_unit')
+    search_fields = ('name', )
+    list_filter = ('name', )
+    empty_value_display = '-пусто-'
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('name', 'color', 'slug',)
+    """ Админ панель управление тегами """
+    list_display = ('name', 'color', 'slug')
+    search_fields = ('name', 'slug')
+    list_filter = ('name', )
+    empty_value_display = '-пусто-'
+
+
+@admin.register(Recipe)
+class RecipeAdmin(admin.ModelAdmin):
+    """ Админ панель управление рецептами """
+    list_display = ('name', 'author', 'favorites')
+    search_fields = ('author', 'name')
+    list_filter = ('tags', )
+    filter_horizontal = ('tags', )
+    empty_value_display = '-пусто-'
+    inlines = (IngredientsRecipeLine,)
+
+    def favorites(self, obj):
+        if Favorite.objects.filter(recipe=obj).exists():
+            return Favorite.objects.filter(recipe=obj).count()
+        return 0
+
+    favorites.short_description = 'Количество добавлений рецепта в избранное'
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    """ Админ панель управление подписками """
+    list_display = ('user', 'recipe')
+    list_filter = ('user', 'recipe')
+    search_fields = ('user', 'recipe')
+    empty_value_display = '-пусто-'
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
-    list_display = ('user', 'recipe',)
-
-
-@admin.register(Favourite)
-class FavouriteAdmin(admin.ModelAdmin):
-    list_display = ('user', 'recipe',)
-
-
-@admin.register(IngredientInRecipe)
-class IngredientInRecipe(admin.ModelAdmin):
-    list_display = ('recipe', 'ingredient', 'amount',)
+    """ Админ панель списка покупок """
+    list_display = ('recipe', 'user')
+    list_filter = ('recipe', 'user')
+    search_fields = ('user', )
+    empty_value_display = '-пусто-'

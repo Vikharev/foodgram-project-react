@@ -75,9 +75,9 @@ sudo docker compose exec backend python manage.py createsuperuser
 sudo docker compose exec backend python manage.py collectstatic --noinput
 ```
 
-Наполнить базу данных содержимым из дампа ingredients.json:
+Наполнить базу данных:
 ```
-sudo docker compose exec backend python manage.py loaddata ingredients.json
+sudo docker compose exec backend python manage.py parser_csv
 ```
 
 
@@ -85,4 +85,9 @@ sudo docker compose exec backend python manage.py loaddata ingredients.json
 
 **Вихарев Алексей**
 
-[![Django-app workflow](https://github.com/vikharev/foodgram-project-react/actions/workflows/main.yml/badge.svg)](https://github.com/vikharev/foodgram-project-react/actions/workflows/main.yml)
+### Сервис доступен по адресу:
+```
+http://62.84.121.95/
+```
+
+![workflow](https://github.com/Vikharev/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
