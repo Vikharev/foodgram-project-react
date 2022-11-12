@@ -80,7 +80,6 @@ sudo docker compose exec backend python manage.py collectstatic --noinput
 sudo docker compose exec backend python manage.py parser_csv
 ```
 
-
 ### Автор
 
 **Вихарев Алексей**
