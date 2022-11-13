@@ -23,7 +23,7 @@ class User(AbstractUser):
         verbose_name='Username',
         max_length=150,
         unique=True,
-        validators=(UnicodeUsernameValidator())
+        validators=(UnicodeUsernameValidator(), )
     )
 
     USERNAME_FIELD = 'email'
