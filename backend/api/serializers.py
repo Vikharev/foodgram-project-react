@@ -1,19 +1,24 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+
 from djoser.serializers import UserCreateSerializer, UserSerializer
+
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCart, Tag)
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
+
+from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+                            ShoppingCart, Tag)
 from users.models import Follow, User
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     """ Сериализатор создания пользователя. """
+
     class Meta:
         model = User
         fields = ('email', 'username', 'first_name',
@@ -33,15 +38,15 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
-            return False
-        return Follow.objects.filter(
-            user=request.user, author=obj
-        ).exists()
+        return all(request is not None,
+                   not request.user.is_anonymous,
+                   Follow.objects.filter(user=request.user, author=obj).exists()
+                   )
 
 
 class TagSerializer(serializers.ModelSerializer):
     """ Сериализатор просмотра тегов"""
+
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug')
@@ -49,6 +54,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 class IngredientSerializer(serializers.ModelSerializer):
     """ Сериализатор просмотра ингрилиентов"""
+
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit')
@@ -90,16 +96,12 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
-        if request.user.is_anonymous:
-            return False
-        return Favorite.objects.filter(
+        return not request.user.is_anonymous and Favorite.objects.filter(
             user=request.user, recipe__id=obj.id).exists()
 
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
-        if request.user.is_anonymous:
-            return False
-        return ShoppingCart.objects.filter(
+        return not request.user.is_anonymous and ShoppingCart.objects.filter(
             user=request.user, recipe__id=obj.id).exists()
 
 
@@ -114,7 +116,7 @@ class AddIngredientRecipeSerializer(serializers.ModelSerializer):
 
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
-    """ Сериализатор  создания, редактирования и удаления рецепта"""
+    """Сериализатор создания, редактирования и удаления рецепта"""
     author = CustomUserSerializer(read_only=True)
     ingredients = AddIngredientRecipeSerializer(many=True)
     tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
@@ -180,15 +182,16 @@ class RecipeShortInfo(serializers.ModelSerializer):
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     """ Сериализатор списка покупок """
+
     class Meta:
         model = ShoppingCart
         fields = ('recipe', 'user')
 
     def validate(self, data):
         request = self.context.get('request')
-        recipe = data['recipe']
+        recipe = data.get('recipe')
         if ShoppingCart.objects.filter(
-            user=request.user, recipe=recipe
+                user=request.user, recipe=recipe
         ).exists():
             raise ValidationError({
                 'errors': 'Рецепт уже есть в корзине.'
@@ -203,6 +206,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
 class FavoriteSerializer(serializers.ModelSerializer):
     """ Сериализатор избранного """
+
     class Meta:
         model = Favorite
         fields = ('user', 'recipe')
@@ -211,7 +215,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if not request or request.user.is_anonymous:
             return False
-        recipe = data['recipe']
+        recipe = data.get('recipe')
         if Favorite.objects.filter(user=request.user, recipe=recipe).exists():
             raise ValidationError({
                 'errors': 'Уже есть в избранном.'
@@ -263,13 +267,14 @@ class FollowListSerializer(ModelSerializer):
 
 class FollowSerializer(ModelSerializer):
     """ Сериализатор подписки"""
+
     class Meta:
         model = Follow
         fields = ('user', 'author')
 
     def validate(self, data):
         get_object_or_404(User, username=data['author'])
-        if self.context['request'].user == data['author']:
+        if self.context['request'].user == data.get('author'):
             raise ValidationError({
                 'errors': 'На себя подписаться нельзя.'
             })

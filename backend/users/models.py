@@ -8,32 +8,29 @@ class User(AbstractUser):
     """ Модель пользователя. """
     first_name = models.CharField(
         verbose_name='Имя',
-        max_length=150,
-        blank=False
+        max_length=150
     )
     last_name = models.CharField(
         verbose_name='Фамилия',
-        max_length=150,
-        blank=False
+        max_length=150
     )
     email = models.EmailField(
         verbose_name='Email',
         max_length=254,
         unique=True
     )
-    username_validator = UnicodeUsernameValidator()
     username = models.CharField(
         verbose_name='Username',
         max_length=150,
         unique=True,
-        validators=[username_validator]
+        validators=(UnicodeUsernameValidator())
     )
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
 
     class Meta:
-        ordering = ['-pk']
+        ordering = ('-pk')
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
@@ -59,7 +56,7 @@ class Follow(models.Model):
     class Meta:
         constraints = [
             UniqueConstraint(
-                fields=['user', 'author'],
+                fields=('user', 'author'),
                 name='user_author_unique'
             )
         ]

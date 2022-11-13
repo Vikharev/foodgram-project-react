@@ -9,11 +9,11 @@ load_dotenv(dotenv_path=env_path)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['62.84.121.95']
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -123,9 +123,9 @@ DJOSER = {
 
 # Internationalization
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

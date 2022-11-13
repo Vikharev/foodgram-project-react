@@ -1,6 +1,6 @@
 from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
 
@@ -38,7 +38,8 @@ class Tag(models.Model):
     )
     color = ColorField(
         format='hex',
-        verbose_name='HEX-код цвета'
+        verbose_name='HEX-код цвета',
+        unique=True
     )
     slug = models.SlugField(
         max_length=200,
@@ -82,10 +83,12 @@ class Recipe(models.Model):
         through='IngredientRecipe'
     )
     tags = models.ManyToManyField(Tag, verbose_name='Теги')
-    cooking_time = models.PositiveIntegerField(
+    cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
         validators=[MinValueValidator(
             1, message='Время приготовления  не менее 1 минуты!'
+        ), MaxValueValidator(
+            1441, message='Время приготовления не более суток!'
         )]
     )
     pub_date = models.DateTimeField(
@@ -114,8 +117,8 @@ class IngredientRecipe(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Рецепт'
     )
-    amount = models.IntegerField(
-        validators=[MinValueValidator(1)],
+    amount = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
         verbose_name='Количество ингредиента'
     )
 
