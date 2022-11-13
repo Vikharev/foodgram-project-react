@@ -72,10 +72,10 @@ jobs:
             sudo echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             sudo echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             sudo docker compose up -d --build
-            sudo docker-compose exec backend python foodgram/manage.py makemigrations
-            sudo docker-compose exec backend python foodgram/manage.py migrate
-            sudo docker-compose exec backend python foodgram/manage.py collectstatic --no-input
-            sudo docker compose exec backend python manage.py parser_csv
+            sudo docker-compose exec -T backend python foodgram/manage.py makemigrations
+            sudo docker-compose exec -T backend python foodgram/manage.py migrate
+            sudo docker-compose exec -T backend python foodgram/manage.py collectstatic --no-input
+            sudo docker compose exec -T backend python manage.py parser_csv
 
   telegram_message:
     name: Send telegram message
