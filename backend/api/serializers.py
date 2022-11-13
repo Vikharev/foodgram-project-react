@@ -40,7 +40,8 @@ class CustomUserSerializer(UserSerializer):
         request = self.context.get('request')
         return all(request is not None,
                    not request.user.is_anonymous,
-                   Follow.objects.filter(user=request.user, author=obj).exists()
+                   Follow.objects.filter(
+                       user=request.user, author=obj).exists()
                    )
 
 
