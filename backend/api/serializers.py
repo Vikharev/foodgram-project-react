@@ -38,11 +38,13 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        return all(request is not None,
-                   not request.user.is_anonymous,
-                   Follow.objects.filter(
-                       user=request.user, author=obj).exists()
-                   )
+        return all(
+            (request is not None,
+             not request.user.is_anonymous,
+             Follow.objects.filter(
+                 user=request.user, author=obj
+             ).exists())
+        )
 
 
 class TagSerializer(serializers.ModelSerializer):
