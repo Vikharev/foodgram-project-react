@@ -87,6 +87,8 @@ sudo docker compose exec backend python manage.py parser_csv
 ### Сервис доступен по адресу:
 ```
 http://62.84.121.95/
+superuser: admin@admin.ru
+password: admin
 ```
 
 ![workflow](https://github.com/Vikharev/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
