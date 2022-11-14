@@ -30,6 +30,26 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     """ Модель тегов"""
+
+    COLOR_PALETTE = [
+        ("#FFFFFF", "White", ),
+        ("#000000", "Black", ),
+        ("#808080", "Gray", ),
+        ("#C0C0C0", "Silver", ),
+        ("#FF00FF", "Fuchsia", ),
+        ("#800080", "Purple", ),
+        ("#FF0000", "Red", ),
+        ("#800000", "Maroon", ),
+        ("#FFFF00", "Yellow", ),
+        ("#808000", "Olive", ),
+        ("#00FF00", "Lime", ),
+        ("#008000", "Green", ),
+        ("#00FFFF", "Aqua", ),
+        ("#008080", "Teal", ),
+        ("#0000FF", "Blue", ),
+        ("#000080", "Navy", ),
+    ]
+
     name = models.CharField(
         max_length=200,
         verbose_name='Название тега',
@@ -37,7 +57,7 @@ class Tag(models.Model):
         unique=True
     )
     color = ColorField(
-        format='hex',
+        choices=COLOR_PALETTE,
         verbose_name='HEX-код цвета',
         unique=True
     )

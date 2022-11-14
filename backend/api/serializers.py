@@ -140,6 +140,36 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             ) for ingredient in ingredients]
         )
 
+    def validate_ingredients(self, data):
+        ingredients = data
+        if not data:
+            raise ValidationError({
+                'ingredients': 'Нужен хотя бы один ингредиент!'
+            })
+        ingredients_list = []
+        for item in ingredients:
+            ingredient = get_object_or_404(Ingredient, id=item['id'])
+            if ingredient in ingredients_list:
+                raise ValidationError({
+                    'ingredients': 'Ингридиенты не могут повторяться!'
+                })
+            try:
+                int(item['amount'])
+            except Exception:
+                raise ValidationError(
+                    {'amount': 'Количество должно быть числом!'}
+                )
+            if int(item['amount']) < 0:
+                raise ValidationError({
+                    'amount': 'Количество ингредиента должно быть больше 0!'
+                })
+            if int(item['amount']) > 1000:
+                raise ValidationError({
+                    'amount': 'Количество ингредиента должно быть меньше 1000!'
+                })
+            ingredients_list.append(ingredient)
+        return data
+
     @transaction.atomic
     def create(self, validated_data):
         """ Создание рецепта """

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import UniqueConstraint, F, Q
 
 
 class User(AbstractUser):
@@ -58,6 +58,10 @@ class Follow(models.Model):
             UniqueConstraint(
                 fields=('user', 'author'),
                 name='user_author_unique'
+            ),
+            models.CheckConstraint(
+                check=~Q(user=F('author')),
+                name='no_self_follow'
             )
         ]
         verbose_name = 'Подписка'
