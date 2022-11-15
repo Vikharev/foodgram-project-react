@@ -53,9 +53,9 @@ class Tag(models.Model):
         unique=True
     )
 
-    def clean_color(self):
-        clean_color = self.color.upper()
-        return clean_color
+    def clean(self):
+        data = self.color
+        return data.upper()
 
     class Meta:
         ordering = ('name',)
