@@ -55,6 +55,10 @@ class Follow(models.Model):
         verbose_name='Автор рецепта',
     )
 
+    def clean(self):
+        if self.user == self.author:
+            raise ValidationError('Нельзя подписаться на самого себя!')
+
     class Meta:
         constraints = [
             UniqueConstraint(
@@ -68,10 +72,6 @@ class Follow(models.Model):
         ]
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-
-    def clean(self):
-        if self.user == self.author:
-            raise ValidationError('Нельзя подписаться на самого себя!')
 
     def __str__(self):
         return f'{self.user} подписался на {self.author}'
