@@ -1,3 +1,5 @@
+from colorfield.fields import ColorField
+
 from django.contrib.auth import get_user_model
 from django.core.validators import (MinValueValidator, MaxValueValidator,
                                     RegexValidator)
@@ -29,22 +31,46 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    """Модель тега"""
-    name = models.CharField('Название', unique=True, max_length=50)
-    color = models.CharField(
-        'Цветовой HEX-код',
-        unique=True,
-        max_length=7,
-        validators=[
-            RegexValidator(
-                regex='^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
-                message='Введенное значение не является цветом в формате HEX!'
-            )
-        ]
+    """ Модель тегов"""
+
+    COLOR_PALETTE = [
+        ("#FFFFFF", "White", ),
+        ("#000000", "Black", ),
+        ("#808080", "Gray", ),
+        ("#C0C0C0", "Silver", ),
+        ("#FF00FF", "Fuchsia", ),
+        ("#800080", "Purple", ),
+        ("#FF0000", "Red", ),
+        ("#800000", "Maroon", ),
+        ("#FFFF00", "Yellow", ),
+        ("#808000", "Olive", ),
+        ("#00FF00", "Lime", ),
+        ("#008000", "Green", ),
+        ("#00FFFF", "Aqua", ),
+        ("#008080", "Teal", ),
+        ("#0000FF", "Blue", ),
+        ("#000080", "Navy", ),
+    ]
+
+    name = models.CharField(
+        max_length=200,
+        verbose_name='Название тега',
+        db_index=True,
+        unique=True
     )
-    slug = models.SlugField('Уникальный слаг', unique=True, max_length=50)
+    color = ColorField(
+        choices=COLOR_PALETTE,
+        verbose_name='HEX-код цвета',
+        unique=True
+    )
+    slug = models.SlugField(
+        max_length=200,
+        verbose_name='Slug',
+        unique=True
+    )
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 

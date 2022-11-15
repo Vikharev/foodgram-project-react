@@ -6,6 +6,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 
 from rest_framework import serializers
+from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
@@ -306,18 +307,23 @@ class FollowSerializer(ModelSerializer):
         fields = ('user', 'author')
 
     def validate(self, data):
-        get_object_or_404(User, username=data['author'])
-        if self.context['request'].user == data.get('author'):
-            raise ValidationError({
-                'errors': 'На себя подписаться нельзя.'
-            })
-        if Follow.objects.filter(
-                user=self.context['request'].user,
-                author=data['author']
-        ):
-            raise ValidationError({
-                'errors': 'Вы уже подписан.'
-            })
+        author = self.instance
+        user = self.context.get('request').user
+        if not User.objects.filter(id=user.id).exists():
+            raise ValidationError(
+                detail='Нет такого пользователя!',
+                code=status.HTTP_400_BAD_REQUEST
+            )
+        if Follow.objects.filter(author=author, user=user).exists():
+            raise ValidationError(
+                detail='Вы уже подписаны на этого пользователя!',
+                code=status.HTTP_400_BAD_REQUEST
+            )
+        if user == author:
+            raise ValidationError(
+                detail='Вы не можете подписаться на самого себя!',
+                code=status.HTTP_400_BAD_REQUEST
+            )
         return data
 
     def to_representation(self, instance):
