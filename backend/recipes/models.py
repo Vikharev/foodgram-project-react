@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import (MinValueValidator, MaxValueValidator,
-                                    RegexValidator)
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.db.models import UniqueConstraint
 
@@ -29,8 +28,13 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    """Модель тега"""
-    name = models.CharField('Название', unique=True, max_length=50)
+    """ Модель тегов"""
+    name = models.CharField(
+        max_length=200,
+        verbose_name='Название тега',
+        db_index=True,
+        unique=True
+    )
     color = models.CharField(
         'Цветовой HEX-код',
         unique=True,
@@ -42,9 +46,14 @@ class Tag(models.Model):
             )
         ]
     )
-    slug = models.SlugField('Уникальный слаг', unique=True, max_length=50)
+    slug = models.SlugField(
+        max_length=200,
+        verbose_name='Slug',
+        unique=True
+    )
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -114,7 +123,7 @@ class IngredientRecipe(models.Model):
         verbose_name='Рецепт'
     )
     amount = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(1000)],
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
         verbose_name='Количество ингредиента'
     )
 
