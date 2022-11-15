@@ -92,5 +92,4 @@ superuser: admin@admin.ru
 password: admin
 ```
 
-
 ![workflow](https://github.com/Vikharev/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
