@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from .models import Follow, User
-from .forms import FollowForm
 
 
 @admin.register(User)
@@ -17,7 +16,6 @@ class UsersAdmin(admin.ModelAdmin):
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
     """ Админ панель управление подписками """
-    form = FollowForm
     list_display = ('user', 'author')
     list_display_links = ('user', )
     search_fields = ('user', )
