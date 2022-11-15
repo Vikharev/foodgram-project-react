@@ -87,6 +87,7 @@ sudo docker compose exec backend python manage.py parser_csv
 ### Сервис доступен по адресу:
 ```
 http://62.84.121.95/
+Данные для проверки:
 superuser: admin@admin.ru
 password: admin
 ```
