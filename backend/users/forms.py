@@ -6,10 +6,9 @@ from .models import Follow
 
 
 class FollowForm(forms.ModelForm):
+    model = Follow
 
     def clean(self):
         if self.user == self.author:
             raise ValidationError('Нельзя подписаться на самого себя!')
 
-    class Meta:
-        model = Follow
