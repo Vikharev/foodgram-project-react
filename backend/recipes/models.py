@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import CICharField
 from django.core.validators import (MinValueValidator, MaxValueValidator,
                                     RegexValidator)
 from django.db import models
@@ -36,7 +37,7 @@ class Tag(models.Model):
         db_index=True,
         unique=True
     )
-    color = models.CharField(
+    color = CICharField(
         'Цветовой HEX-код',
         unique=True,
         max_length=7,
