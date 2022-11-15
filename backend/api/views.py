@@ -8,7 +8,6 @@ from djoser.views import UserViewSet
 
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
@@ -17,7 +16,7 @@ from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import Follow, User
 
-from .filters import RecipeFilter
+from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrAdminOrReadOnly
 from .serializers import (CreateRecipeSerializer, FavoriteSerializer,
@@ -83,8 +82,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
     permission_classes = (AllowAny, )
-    filter_backends = (SearchFilter, )
-    search_fields = ('^name', )
+    filter_backends = (IngredientFilter, )
+    search_fields = ('name', )
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
