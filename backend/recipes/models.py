@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.fields import CICharField
 from django.core.validators import (MinValueValidator, MaxValueValidator,
                                     RegexValidator)
 from django.db import models
@@ -37,7 +36,7 @@ class Tag(models.Model):
         db_index=True,
         unique=True
     )
-    color = CICharField(
+    color = models.CharField(
         'Цветовой HEX-код',
         unique=True,
         max_length=7,
@@ -53,6 +52,10 @@ class Tag(models.Model):
         verbose_name='Slug',
         unique=True
     )
+
+    def clean_color(self):
+        clean_color = self.color.upper()
+        return clean_color
 
     class Meta:
         ordering = ('name',)
