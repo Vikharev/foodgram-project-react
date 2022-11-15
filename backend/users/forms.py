@@ -11,4 +11,3 @@ class FollowForm(forms.ModelForm):
     def clean(self):
         if self.user == self.author:
             raise ValidationError('Нельзя подписаться на самого себя!')
-
