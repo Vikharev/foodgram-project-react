@@ -53,8 +53,8 @@ class Tag(models.Model):
         unique=True
     )
 
-    def clean(self):
-        data = self.color
+    def clean_color(self):
+        data = self.cleaned_data['color']
         return data.upper()
 
     class Meta:
