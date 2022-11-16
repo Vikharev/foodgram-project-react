@@ -1,3 +1,4 @@
+from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.core.validators import (MinValueValidator, MaxValueValidator,
                                     RegexValidator)
@@ -36,26 +37,16 @@ class Tag(models.Model):
         db_index=True,
         unique=True
     )
-    color = models.CharField(
-        'Цветовой HEX-код',
-        unique=True,
-        max_length=7,
-        validators=[
-            RegexValidator(
-                regex='^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
-                message='Введенное значение не является цветом в формате HEX!'
-            )
-        ]
+    color = ColorField(
+        format='hex',
+        verbose_name='HEX-код цвета',
+        unique=True
     )
     slug = models.SlugField(
         max_length=200,
         verbose_name='Slug',
         unique=True
     )
-
-    def clean_color(self):
-        data = self.cleaned_data['color']
-        return data.upper()
 
     class Meta:
         ordering = ('name',)
@@ -64,7 +55,6 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class Recipe(models.Model):
     """ Модель рецептов. """
