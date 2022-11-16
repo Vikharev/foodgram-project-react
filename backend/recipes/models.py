@@ -1,7 +1,6 @@
 from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
-from django.core.validators import (MinValueValidator, MaxValueValidator,
-                                    RegexValidator)
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
 
@@ -55,6 +54,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Recipe(models.Model):
     """ Модель рецептов. """
